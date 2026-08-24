@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Github, Linkedin, Instagram, Youtube } from 'lucide-react'
+import { Github, Linkedin, Instagram, Youtube, Phone } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import caldimLogo from '../assets/caldim-logo.png'
 
@@ -10,6 +10,25 @@ const Footer = () => {
         { icon: Youtube, href: 'https://www.youtube.com/@CaldimEngineering', label: 'YouTube' },
         { icon: Linkedin, href: 'https://in.linkedin.com/company/caldim-engineering?trk=public_post_feed-actor-name', label: 'LinkedIn' },
         { icon: Instagram, href: 'https://www.instagram.com/caldimengineering/', label: 'Instagram' },
+    ]
+
+    const officeAddresses = [
+        {
+            title: 'CHENNAI — HEAD OFFICE',
+            badge: 'HEADQUARTERS',
+            address: 'Minimac Center #118, First Floor, Arcot Road, Valasaravakkam, Chennai – 600087',
+            phoneLabel: 'Office Telephone:',
+            phone: '248-455 3855',
+            tel: 'tel:2484553855'
+        },
+        {
+            title: 'HOSUR — BRANCH OFFICE',
+            badge: 'BRANCH OFFICE',
+            address: 'Plot No. 22, 23, 24, 2nd Floor, Durga Bhavani Towers, Thirsul Layout, Near RTO Check Post, NH 207, Bagalur Road, Hosur – 635103',
+            phoneLabel: 'Office Telephone:',
+            phone: '04344610637',
+            tel: 'tel:04344610637'
+        }
     ]
 
     const footerLinks = [
@@ -63,7 +82,8 @@ const Footer = () => {
             </div>
 
             <div className="section-container pt-16 md:pt-24 pb-12">
-                <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+                {/* Brand & Links */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                     {/* Brand */}
                     <div className="lg:col-span-2">
                         <Link to="/" className="flex items-center space-x-3 mb-4 group">
@@ -123,6 +143,55 @@ const Footer = () => {
                                     </li>
                                 ))}
                             </ul>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Office Addresses Cards */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
+                    {officeAddresses.map((office, idx) => (
+                        <div
+                            key={idx}
+                            className="bg-white/[0.04] border border-white/10 hover:border-blue-400/40 backdrop-blur-md rounded-2xl p-6 md:p-7 shadow-2xl flex flex-col justify-between transition-all duration-300 group"
+                        >
+                            <div>
+                                {/* Header Row */}
+                                <div className="flex items-center justify-between gap-4 mb-4">
+                                    <div className="flex items-center gap-2.5">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_10px_#60a5fa] shrink-0" />
+                                        <h4 className="text-xs md:text-sm font-bold tracking-wider text-white uppercase">
+                                            {office.title}
+                                        </h4>
+                                    </div>
+                                    <span className="px-3 py-1 text-[10px] md:text-xs font-semibold tracking-wider text-blue-300 uppercase rounded-full bg-blue-500/15 border border-blue-400/30 shrink-0">
+                                        {office.badge}
+                                    </span>
+                                </div>
+
+                                {/* Address Block */}
+                                <div className="border-l-2 border-blue-500 pl-4 my-4">
+                                    <p className="text-xs md:text-sm text-blue-100/85 leading-relaxed font-normal">
+                                        {office.address}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Divider & Footer */}
+                            <div>
+                                <div className="border-t border-white/10 my-4" />
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs text-blue-100/60 font-medium">
+                                        {office.phoneLabel}
+                                    </span>
+                                    <a
+                                        href={office.tel}
+                                        className="inline-flex items-center gap-2 px-4 py-1.5 text-xs md:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-all rounded-full shadow-md shadow-blue-600/30 hover:shadow-blue-500/50 hover:-translate-y-0.5"
+                                    >
+                                        <Phone size={13} className="shrink-0" />
+                                        <span>{office.phone}</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     ))}
                 </div>
