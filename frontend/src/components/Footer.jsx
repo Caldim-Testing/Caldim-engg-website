@@ -1,213 +1,97 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { Github, Linkedin, Instagram, Youtube, Phone } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import caldimLogo from '../assets/caldim-logo.png'
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { MapPin, Mail, Phone, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import caldimLogo from '../assets/caldim-logo.png';
+import { COMPANY_INFO, OFFICES } from '../data/siteData';
 
-const Footer = () => {
-    const socialLinks = [
-        { icon: Github, href: '#', label: 'GitHub' },
-        { icon: Youtube, href: 'https://www.youtube.com/@CaldimEngineering', label: 'YouTube' },
-        { icon: Linkedin, href: 'https://in.linkedin.com/company/caldim-engineering?trk=public_post_feed-actor-name', label: 'LinkedIn' },
-        { icon: Instagram, href: 'https://www.instagram.com/caldimengineering/', label: 'Instagram' },
-    ]
+export default function Footer() {
+  const location = useLocation();
 
-    const officeAddresses = [
-        {
-            title: 'CHENNAI — HEAD OFFICE',
-            badge: 'HEADQUARTERS',
-            address: 'Minimac Center #118, First Floor, Arcot Road, Valasaravakkam, Chennai – 600087',
-            phoneLabel: 'Office Telephone:',
-            phone: '248-455 3855',
-            tel: 'tel:2484553855'
-        },
-        {
-            title: 'HOSUR — BRANCH OFFICE',
-            badge: 'BRANCH OFFICE',
-            address: 'Plot No. 22, 23, 24, 2nd Floor, Durga Bhavani Towers, Thirsul Layout, Near RTO Check Post, NH 207, Bagalur Road, Hosur – 635103',
-            phoneLabel: 'Office Telephone:',
-            phone: '04344610637',
-            tel: 'tel:04344610637'
-        }
-    ]
+  if (['/portal', '/register'].includes(location.pathname)) {
+    return null;
+  }
 
-    const footerLinks = [
-        {
-            title: 'Company',
-            links: [
-                { name: 'About Us', href: '/about' },
-                { name: 'Projects', href: '/projects' },
-                // { name: 'Careers', href: '#' },
-                { name: 'Contact', href: '/contact' },
-            ]
-        },
-        {
-            title: 'Services',
-            links: [
-                { name: 'Web Development', href: '/services#web-development' },
-                { name: 'AI Solutions', href: '/services#ai-solutions' },
-                { name: 'UI/UX Design', href: '/services#ui-ux-design' },
-                { name: 'Cloud Services', href: '/services#cloud-services' },
-            ]
-        },
-        {
-            title: 'Resources',
-            links: [
-                { name: 'Documentation' },
-                { name: 'Privacy Policy' },
-                { name: 'Terms of Service' },
-                { name: 'Support' },
-            ]
-        }
-    ]
+  return (
+    <footer className="bg-navy-gradient text-white pt-16 pb-12 border-t border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800/80">
+          
+          {/* Brand & Blurb Column */}
+          <div className="lg:col-span-2 space-y-4">
+            <Link to="/" className="flex items-center gap-3">
+              <img
+                src={caldimLogo}
+                alt="CALDIM Solutions"
+                className="h-10 w-auto object-contain bg-white/10 p-1.5 rounded-xl border border-white/20"
+              />
+              <span className="font-extrabold text-xl tracking-tight text-white">
+                CALDIM <span className="text-blue-400">Solutions</span>
+              </span>
+            </Link>
+            <p className="text-slate-300 text-sm leading-relaxed max-w-md">
+              {COMPANY_INFO.subtext}
+            </p>
+            <p className="text-xs text-blue-300 font-medium italic">
+              "{COMPANY_INFO.tagline}"
+            </p>
 
-    return (
-        <footer className="relative bg-gradient-to-b from-[#002B54] to-[#00376b] text-white">
-            {/* Wave Top Decoration */}
-            <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] transform -translate-y-full">
-                <svg
-                    viewBox="0 0 1200 120"
-                    preserveAspectRatio="none"
-                    className="relative block w-full h-[60px] md:h-[120px]"
-                >
-                    <path
-                        d="M0,40 L40,43.3 C80,46.7,160,53.3,240,58.3 C320,63.3,400,66.7,480,60 C560,53.3,640,36.7,720,38.3 C800,40,880,60,960,70 C1040,80,1120,80,1200,70 C1280,60,1360,40,1400,30 L1440,20 L1440,120 L1400,120 C1360,120,1280,120,1200,120 C1120,120,1040,120,960,120 C880,120,800,120,720,120 C640,120,560,120,480,120 C400,120,320,120,240,120 C160,120,80,120,40,120 L0,120 Z"
-                        fill="#00376b" opacity="0.4"
-                    ></path>
-                    <path
-                        d="M0,67 L24,64.3 C48,61.7,96,56,144,53.3 C192,50.7,240,50.7,288,58.7 C336,66.7,384,82.7,432,82.7 C480,82.7,528,66.7,576,61.3 C624,56,672,61.3,720,66.7 C768,72,816,77.3,864,74.7 C912,72,960,61.3,1008,53.3 C1056,45.3,1104,40,1152,42.7 C1200,45.3,1248,56,1272,61.3 L1296,66.7 L1296,120 L1272,120 C1248,120,1200,120,1152,120 C1104,120,1056,120,1008,120 C960,120,912,120,864,120 C816,120,768,120,720,120 C672,120,624,120,576,120 C528,120,480,120,432,120 C384,120,336,120,288,120 C240,120,192,120,144,120 C96,120,48,120,24,120 L0,120 Z"
-                        fill="#002B54"
-                    ></path>
-                </svg>
+            <div className="pt-2 flex items-center gap-2 text-xs text-slate-300">
+              <Mail className="w-4 h-4 text-blue-400 shrink-0" />
+              <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-white transition-colors">
+                {COMPANY_INFO.email}
+              </a>
             </div>
+          </div>
 
-            <div className="section-container pt-16 md:pt-24 pb-12">
-                {/* Brand & Links */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
-                    {/* Brand */}
-                    <div className="lg:col-span-2">
-                        <Link to="/" className="flex items-center space-x-3 mb-4 group">
-                            <div className="relative w-12 h-12 flex items-center justify-center">
-                                <img
-                                    src={caldimLogo}
-                                    alt="Caldim Logo"
-                                    className="w-full h-full object-contain filter"
-                                    style={{ filter: 'brightness(0) invert(1) drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.2))' }}
-                                />
-                            </div>
-                            <span className="text-2xl font-bold tracking-[0.2em] text-white">CALDIM</span>
-                        </Link>
-                        <p className="text-blue-100/60 mb-6 leading-relaxed max-w-sm">
-                            Building the future, one line of code at a time. Your trusted partner in digital transformation and innovative software solutions.
-                        </p>
-                        <div className="flex gap-4">
-                            {socialLinks.map((social, index) => {
-                                const Icon = social.icon
-                                return (
-                                    <motion.a
-                                        key={index}
-                                        href={social.href}
-                                        aria-label={social.label}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        whileHover={{ scale: 1.1, y: -2 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="w-10 h-10 bg-white/5 hover:bg-blue-400 border border-white/10 rounded-lg flex items-center justify-center transition-all group"
-                                    >
-                                        <Icon className="w-5 h-5 text-blue-100 group-hover:text-white transition-colors" />
-                                    </motion.a>
-                                )
-                            })}
-                        </div>
-                    </div>
+          {/* Quick Navigation Links */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-blue-400">Quick Links</h3>
+            <ul className="space-y-2 text-sm text-slate-300">
+              <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
+              <li><Link to="/services" className="hover:text-white transition-colors">Services</Link></li>
+              <li><Link to="/products" className="hover:text-white transition-colors">Products</Link></li>
+              <li><Link to="/projects" className="hover:text-white transition-colors">Projects Catalog</Link></li>
+              <li><Link to="/careers" className="hover:text-white transition-colors">Careers</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
+            </ul>
+          </div>
 
-                    {/* Links */}
-                    {footerLinks.map((group, groupIndex) => (
-                        <div key={groupIndex}>
-                            <h3 className="font-bold text-sm uppercase tracking-widest mb-6 text-white">{group.title}</h3>
-                            <ul className="space-y-4">
-                                {group.links.map((link, index) => (
-                                    <li key={index}>
-                                        {link.href ? (
-                                            <Link
-                                                to={link.href}
-                                                className="text-blue-100/60 hover:text-blue-400 transition-all inline-block hover:translate-x-1 duration-200 text-sm"
-                                            >
-                                                {link.name}
-                                            </Link>
-                                        ) : (
-                                            <span className="text-blue-100/40 text-sm cursor-default">
-                                                {link.name}
-                                            </span>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
+          {/* Location & Info (2 Columns wide for clarity) */}
+          <div className="lg:col-span-2 space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-blue-400">Location & Info</h3>
+            <div className="space-y-4 text-xs text-slate-300">
+              {OFFICES.map((off) => (
+                <div key={off.id} className="border-l-2 border-blue-500/50 pl-3 space-y-1">
+                  <div className="font-bold text-white text-xs flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                    <span>{off.title}</span>
+                  </div>
+                  {off.companyName && (
+                    <div className="text-blue-300 font-semibold">{off.companyName}</div>
+                  )}
+                  <div className="text-slate-300 leading-relaxed">{off.address}</div>
+                  <div className="flex items-center gap-1.5 text-slate-400 pt-0.5">
+                    <Phone className="w-3 h-3 text-cyan-400 shrink-0" />
+                    <span>Office: {off.phone}</span>
+                  </div>
                 </div>
-
-                {/* Office Addresses Cards */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
-                    {officeAddresses.map((office, idx) => (
-                        <div
-                            key={idx}
-                            className="bg-white/[0.04] border border-white/10 hover:border-blue-400/40 backdrop-blur-md rounded-2xl p-6 md:p-7 shadow-2xl flex flex-col justify-between transition-all duration-300 group"
-                        >
-                            <div>
-                                {/* Header Row */}
-                                <div className="flex items-center justify-between gap-4 mb-4">
-                                    <div className="flex items-center gap-2.5">
-                                        <span className="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_10px_#60a5fa] shrink-0" />
-                                        <h4 className="text-xs md:text-sm font-bold tracking-wider text-white uppercase">
-                                            {office.title}
-                                        </h4>
-                                    </div>
-                                    <span className="px-3 py-1 text-[10px] md:text-xs font-semibold tracking-wider text-blue-300 uppercase rounded-full bg-blue-500/15 border border-blue-400/30 shrink-0">
-                                        {office.badge}
-                                    </span>
-                                </div>
-
-                                {/* Address Block */}
-                                <div className="border-l-2 border-blue-500 pl-4 my-4">
-                                    <p className="text-xs md:text-sm text-blue-100/85 leading-relaxed font-normal">
-                                        {office.address}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Divider & Footer */}
-                            <div>
-                                <div className="border-t border-white/10 my-4" />
-                                <div className="flex items-center justify-between gap-2">
-                                    <span className="text-xs text-blue-100/60 font-medium">
-                                        {office.phoneLabel}
-                                    </span>
-                                    <a
-                                        href={office.tel}
-                                        className="inline-flex items-center gap-2 px-4 py-1.5 text-xs md:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 transition-all rounded-full shadow-md shadow-blue-600/30 hover:shadow-blue-500/50 hover:-translate-y-0.5"
-                                    >
-                                        <Phone size={13} className="shrink-0" />
-                                        <span>{office.phone}</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Bottom Bar */}
-                <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-blue-100/40 text-xs tracking-wider uppercase font-medium">
-                        © {new Date().getFullYear()} CALDIM. All rights reserved.
-                    </p>
-                    <p className="text-blue-100/40 text-xs tracking-wider uppercase font-medium flex items-center gap-2">
-                        developed by <span className="text-blue-400 animate-pulse text-lg"></span> CALDIM
-                    </p>
-                </div>
+              ))}
             </div>
-        </footer>
-    )
+          </div>
+
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <p>© {new Date().getFullYear()} CALDIM Solutions Pvt. Ltd. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <span>Privacy Policy</span>
+            <span>Terms of Service</span>
+            <span>Security Compliance</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }
-
-export default Footer
