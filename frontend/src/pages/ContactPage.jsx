@@ -1,364 +1,256 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
-import { Mail, Phone, Send, Terminal, User, AtSign, Cpu, ShieldCheck, CheckCircle, AlertCircle, Loader } from 'lucide-react'
-import { API_URL } from '../emailConfig'
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { MapPin, Mail, Phone, Send, CheckCircle2 } from 'lucide-react';
+import { COMPANY_INFO, OFFICES } from '../data/siteData';
 
-const ContactPage = () => {
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
+export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    company: '',
+    email: '',
+    contactNumber: '',
+    projectInfo: ''
+  });
 
-    const [formData, setFormData] = useState({
+  const [status, setStatus] = useState({ loading: false, success: false, error: '' });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setStatus({ loading: true, success: false, error: '' });
+
+    setTimeout(() => {
+      setStatus({ loading: false, success: true, error: '' });
+      setFormData({
         firstName: '',
         lastName: '',
-        businessEmail: '',
+        company: '',
+        email: '',
         contactNumber: '',
-        projectInfo: '',
-    })
+        projectInfo: ''
+      });
+    }, 1000);
+  };
 
-    const [submitStatus, setSubmitStatus] = useState('idle') // 'idle' | 'loading' | 'success' | 'error'
-    const [errorMessage, setErrorMessage] = useState('')
+  return (
+    <div className="pt-20 bg-slate-50 min-h-screen text-slate-900">
+      
+      {/* HERO */}
+      <section className="bg-navy-gradient text-white py-16 text-center overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96, filter: "blur(10px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3"
+        >
+          <span className="text-xs font-bold uppercase tracking-widest text-cyan-300 bg-white/10 px-4 py-1.5 rounded-full border border-white/20">
+            Get In Touch
+          </span>
+          <h1 className="text-4xl font-extrabold">Contact CALDIM Engineering</h1>
+          <p className="text-slate-300 text-sm max-w-xl mx-auto">
+            {COMPANY_INFO.contactCTA || "Get in touch with our team for expert consultation and business solutions."}
+          </p>
+        </motion.div>
+      </section>
 
-    const cardRef = useRef(null)
-    const formRef = useRef(null)
-    const mouseX = useMotionValue(0)
-    const mouseY = useMotionValue(0)
+      {/* CONTACT FORM & INFO SECTION */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            {/* Left Contact Info */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="lg:col-span-5 bg-navy-gradient text-white p-8 sm:p-10 rounded-3xl space-y-8 flex flex-col justify-between"
+            >
+              <div>
+                <h3 className="text-2xl font-bold mb-4">Global Offices & Contacts</h3>
+                <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                  Whether you need a full enterprise software build, custom AI automation, or an expert engineering consultation, reach out to any of our global offices.
+                </p>
 
-    const rotateX = useSpring(useTransform(mouseY, [-200, 200], [5, -5]), { stiffness: 100, damping: 30 })
-    const rotateY = useSpring(useTransform(mouseX, [-200, 200], [-5, 5]), { stiffness: 100, damping: 30 })
-
-    const handleMouseMove = (e) => {
-        if (!cardRef.current) return
-        const rect = cardRef.current.getBoundingClientRect()
-        const x = e.clientX - rect.left - rect.width / 2
-        const y = e.clientY - rect.top - rect.height / 2
-        mouseX.set(x)
-        mouseY.set(y)
-    }
-
-    const handleMouseLeave = () => {
-        mouseX.set(0)
-        mouseY.set(0)
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setSubmitStatus('loading')
-        setErrorMessage('')
-
-        try {
-            const res = await fetch(`${API_URL}/api/contact`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    email: formData.businessEmail,
-                    contactNumber: formData.contactNumber,
-                    projectInfo: formData.projectInfo,
-                }),
-            })
-            const data = await res.json()
-            if (res.ok && data.success) {
-                setSubmitStatus('success')
-                setFormData({ firstName: '', lastName: '', businessEmail: '', contactNumber: '', projectInfo: '' })
-                setTimeout(() => setSubmitStatus('idle'), 5000)
-            } else {
-                throw new Error(data.message || 'Server error')
-            }
-        } catch (error) {
-            console.error('Contact form error:', error)
-            setSubmitStatus('error')
-            setErrorMessage(error.message || 'Failed to send message. Please try again or email us directly at support@caldimengg.in')
-            setTimeout(() => setSubmitStatus('idle'), 6000)
-        }
-    }
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        })
-    }
-
-    const contactInfo = [
-        {
-            icon: Mail,
-            title: 'PROTOCOL.SMTP',
-            value: 'support@caldimengg.in',
-            link: 'mailto:support@caldimengg.in',
-        },
-        {
-            icon: Phone,
-            title: 'PROTOCOL.VOIP',
-            value: '+910000000000 ',
-            link: 'tel:+0000000000',
-        },
-        {
-            icon: Terminal,
-            title: 'NODE.LOCATION',
-            value: 'Hosur,Chennai, Tamil Nadu',
-            link: 'https://www.google.com/maps/search/?api=1&query=12.754579,77.834673',
-        },
-    ]
-
-    const inputClass = "w-full px-8 py-5 rounded-[1.8rem] bg-gray-50/50 border border-gray-100 text-black focus:border-blue-600 focus:bg-white focus:outline-none transition-all placeholder:text-gray-300 text-sm font-medium shadow-sm"
-
-    return (
-        <div className="pt-24 sm:pt-32 pb-16 sm:pb-24 bg-white min-h-screen relative overflow-hidden">
-            <div className="max-w-[1440px] xl:max-w-[1600px] 2xl:max-w-[1800px] mx-auto px-6 relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8 }}
-                    className="mb-16 sm:mb-24 text-center"
-                >
-                    <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter text-black uppercase italic leading-none">
-                        CONTACT<br />
-                        <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(0,0,0,0.4)' }}>INTERFACE</span>
-                    </h1>
-                </motion.div>
-
-                <div className="grid lg:grid-cols-2 gap-12 sm:gap-24 items-start">
-                    {/* Interactive Contact Form Card */}
+                <div className="space-y-6 text-xs">
+                  {OFFICES.map((off, i) => (
                     <motion.div
-                        ref={cardRef}
-                        onMouseMove={handleMouseMove}
-                        onMouseLeave={handleMouseLeave}
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        style={{
-                            rotateX: typeof window !== 'undefined' && window.innerWidth > 768 ? rotateX : 0,
-                            rotateY: typeof window !== 'undefined' && window.innerWidth > 768 ? rotateY : 0,
-                            transformStyle: 'preserve-3d',
-                            backfaceVisibility: 'hidden',
-                        }}
-                        transition={{ duration: 0.8 }}
-                        className="bg-white p-6 sm:p-12 rounded-[2.5rem] border border-gray-100 relative group shadow-[0_32px_64px_-12px_rgba(0,0,0,0.08)] overflow-hidden"
+                      key={off.id}
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
+                      className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2"
                     >
-                        <form ref={formRef} onSubmit={handleSubmit} className="space-y-8 sm:space-y-10 relative z-10">
-                            {/* Name Row */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10">
-                                <div className="space-y-3 sm:space-y-4">
-                                    <div className="flex items-center gap-2 ml-2">
-                                        <User size={14} className="text-blue-600" />
-                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40">First Name</label>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        name="firstName"
-                                        value={formData.firstName}
-                                        onChange={handleChange}
-                                        required
-                                        disabled={submitStatus === 'loading'}
-                                        className={inputClass}
-                                        placeholder="firstname"
-                                    />
-                                </div>
-                                <div className="space-y-3 sm:space-y-4">
-                                    <div className="flex items-center gap-2 ml-2">
-                                        <User size={14} className="text-blue-600" />
-                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40">Last Name</label>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                        required
-                                        disabled={submitStatus === 'loading'}
-                                        className={inputClass}
-                                        placeholder="lastname"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Email & Phone Row */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10">
-                                <div className="space-y-3 sm:space-y-4">
-                                    <div className="flex items-center gap-2 ml-2">
-                                        <AtSign size={14} className="text-blue-600" />
-                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40">Email Address</label>
-                                    </div>
-                                    <input
-                                        type="email"
-                                        name="businessEmail"
-                                        value={formData.businessEmail}
-                                        onChange={handleChange}
-                                        required
-                                        disabled={submitStatus === 'loading'}
-                                        className={inputClass}
-                                        placeholder="busniess@company.com"
-                                    />
-                                </div>
-                                <div className="space-y-3 sm:space-y-4">
-                                    <div className="flex items-center gap-2 ml-2">
-                                        <Phone size={14} className="text-blue-600" />
-                                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40">Contact Number</label>
-                                    </div>
-                                    <input
-                                        type="tel"
-                                        name="contactNumber"
-                                        value={formData.contactNumber}
-                                        onChange={handleChange}
-                                        required
-                                        disabled={submitStatus === 'loading'}
-                                        className={inputClass}
-                                        placeholder="+91 98765 43210"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Project Information */}
-                            <div className="space-y-3 sm:space-y-4">
-                                <div className="flex items-center gap-2 ml-2">
-                                    <Cpu size={14} className="text-blue-600" />
-                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40">Project Information</label>
-                                </div>
-                                <textarea
-                                    name="projectInfo"
-                                    value={formData.projectInfo}
-                                    onChange={handleChange}
-                                    required
-                                    rows={5}
-                                    disabled={submitStatus === 'loading'}
-                                    className="w-full px-8 py-6 rounded-[2rem] bg-gray-50/50 border border-gray-100 text-black focus:border-blue-600 focus:bg-white focus:outline-none transition-all placeholder:text-gray-300 text-sm font-medium resize-none shadow-sm"
-                                    placeholder="Describe your project requirements, technical specifications, timeline, and any other relevant details..."
-                                />
-                            </div>
-
-                            {/* Status Messages */}
-                            <AnimatePresence mode="wait">
-                                {submitStatus === 'error' && (
-                                    <motion.div
-                                        key="error"
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        className="flex items-start gap-3 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700"
-                                    >
-                                        <AlertCircle size={18} className="shrink-0 mt-0.5" />
-                                        <p className="text-sm font-medium">{errorMessage}</p>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            {/* Submit Button */}
-                            <motion.button
-                                type="submit"
-                                disabled={submitStatus === 'loading' || submitStatus === 'success'}
-                                whileHover={submitStatus === 'idle' ? { scale: 1.01 } : {}}
-                                whileTap={submitStatus === 'idle' ? { scale: 0.99 } : {}}
-                                className={`w-full py-6 sm:py-7 font-black uppercase text-[11px] sm:text-[12px] tracking-[0.4em] rounded-full flex items-center justify-center gap-4 transition-all relative overflow-hidden group/btn shadow-xl shadow-blue-600/10 ${submitStatus === 'success'
-                                    ? 'bg-green-500 text-white cursor-default'
-                                    : submitStatus === 'loading'
-                                        ? 'bg-blue-400 text-white cursor-not-allowed'
-                                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                                    }`}
-                            >
-                                {submitStatus === 'idle' && (
-                                    <>
-                                        <span className="relative z-10">Send</span>
-                                        <Send size={16} className="relative z-10" />
-                                    </>
-                                )}
-                                {submitStatus === 'loading' && (
-                                    <>
-                                        <Loader size={18} className="animate-spin" />
-                                        <span>Sending...</span>
-                                    </>
-                                )}
-                                {submitStatus === 'success' && (
-                                    <>
-                                        <CheckCircle size={18} />
-                                        <span>MESSAGE SENT SUCCESSFULLY!</span>
-                                    </>
-                                )}
-                                {submitStatus === 'error' && (
-                                    <>
-                                        <span>RETRY TRANSMISSION</span>
-                                        <Send size={16} />
-                                    </>
-                                )}
-                            </motion.button>
-
-                            {/* Success message below button */}
-                            <AnimatePresence>
-                                {submitStatus === 'success' && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0 }}
-                                        className="text-center text-sm text-green-600 font-medium"
-                                    >
-                                        ✓ Your message has been sent to support@caldimengg.in. We'll respond shortly!
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </form>
-
-                        <div className="absolute -bottom-10 -right-10 p-12 opacity-5 pointer-events-none hidden sm:block">
-                            <ShieldCheck size={300} strokeWidth={1} className="text-blue-600" />
-                        </div>
+                      <div className="flex items-center gap-2 text-cyan-300 font-bold text-sm">
+                        <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>{off.title}</span>
+                      </div>
+                      {off.companyName && (
+                        <div className="text-blue-300 font-semibold">{off.companyName}</div>
+                      )}
+                      <p className="text-slate-300 leading-relaxed">{off.address}</p>
+                      <div className="flex items-center gap-2 text-slate-400 font-medium pt-1 border-t border-white/10">
+                        <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                        <span>Office Tel: {off.phone}</span>
+                      </div>
                     </motion.div>
+                  ))}
 
-                    {/* Contact details */}
-                    <div className="space-y-12 sm:space-y-16">
-                        <div className="space-y-6 sm:space-y-8">
-                            <h2 className="text-3xl sm:text-5xl text-black font-black leading-tight tracking-tighter uppercase italic">
-                                ESTABLISH<br />
-                                <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(0,0,0,0.4)' }}>CONNECTION</span>
-                            </h2>
-                            <p className="text-base sm:text-lg text-gray-500 font-light leading-relaxed max-w-sm border-l border-blue-600/20 pl-6 sm:pl-8">
-                                Our engineering response team is available for deep-tech consultations and project deployments. Fill in your details and we'll get back to you promptly.
-                            </p>
-                        </div>
-
-                        <div className="grid gap-4 sm:gap-6">
-                            {contactInfo.map((info, index) => {
-                                const Icon = info.icon
-                                return (
-                                    <motion.a
-                                        key={index}
-                                        href={info.link}
-                                        target={info.link.startsWith('http') ? '_blank' : undefined}
-                                        rel={info.link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                                        initial={{ opacity: 0, x: 50 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: index * 0.1 }}
-                                        className="group flex items-center gap-4 sm:gap-6 p-2 sm:p-4 rounded-[2rem] sm:rounded-[3rem] bg-gray-50 border border-blue-600/10 hover:border-blue-600 hover:bg-white transition-all shadow-sm"
-                                    >
-                                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white border border-blue-600/10 rounded-xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
-                                            <Icon size={20} strokeWidth={1} />
-                                        </div>
-                                        <div className="overflow-hidden">
-                                            <div className="text-base sm:text-xl font-black text-black group-hover:text-blue-600 transition-colors uppercase tracking-tight truncate">{info.value}</div>
-                                        </div>
-                                    </motion.a>
-                                )
-                            })}
-                        </div>
-
-                        {/* Info note */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5 }}
-                            className="p-6 rounded-2xl bg-blue-50 border border-blue-100"
-                        >
-                            <p className="text-xs text-blue-700 font-medium leading-relaxed">
-                                <span className="font-black uppercase tracking-wider">Response Time:</span> Our team typically responds within 24–48 business hours. For urgent inquiries, please call us directly.
-                            </p>
-                        </motion.div>
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-cyan-400 shrink-0" />
+                    <div>
+                      <h4 className="font-bold text-white text-xs uppercase tracking-wider">Email Inquiry</h4>
+                      <a href={`mailto:${COMPANY_INFO.email}`} className="text-cyan-300 hover:text-white text-sm">
+                        {COMPANY_INFO.email}
+                      </a>
                     </div>
+                  </div>
                 </div>
-            </div>
+              </div>
 
-            {/* Background elements */}
-            <div className="absolute top-[10%] -left-[10%] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-blue-600/5 blur-[80px] sm:blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[10%] -right-[10%] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-blue-500/5 blur-[80px] sm:blur-[120px] rounded-full pointer-events-none" />
+              <div className="pt-6 border-t border-white/10 text-xs text-slate-400">
+                Response SLA: 24 to 48 business hours.
+              </div>
+            </motion.div>
+
+            {/* Right Contact Form UI */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-md"
+            >
+              
+              <h3 className="text-2xl font-bold text-[#002B54] mb-2">Send Us a Message</h3>
+              <p className="text-xs text-slate-500 mb-8">Fill out the details below and an engineering consultant will reach out.</p>
+
+              {status.success && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-3"
+                >
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <div>
+                    <strong className="font-bold">Message Sent Successfully!</strong>
+                    <p>Thank you for reaching out. We will get back to you shortly.</p>
+                  </div>
+                </motion.div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">First Name *</label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      required
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="e.g. John"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm outline-none transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Last Name *</label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      required
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="e.g. Doe"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Company / Org</label>
+                    <input
+                      type="text"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      placeholder="e.g. Acme Corp"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm outline-none transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Business Email *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="john@company.com"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Contact Phone / WhatsApp</label>
+                  <input
+                    type="text"
+                    name="contactNumber"
+                    value={formData.contactNumber}
+                    onChange={handleChange}
+                    placeholder="+91 98765 43210"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm outline-none transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">Project Details / Message *</label>
+                  <textarea
+                    name="projectInfo"
+                    required
+                    rows="4"
+                    value={formData.projectInfo}
+                    onChange={handleChange}
+                    placeholder="Describe your software requirements, timeline, or scope..."
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-sm outline-none transition-all resize-none"
+                  ></textarea>
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.96 }}
+                  type="submit"
+                  disabled={status.loading}
+                  className="w-full py-4 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2"
+                >
+                  {status.loading ? (
+                    <span>Sending Message...</span>
+                  ) : (
+                    <>
+                      <span>Submit Project Inquiry</span>
+                      <Send className="w-4 h-4" />
+                    </>
+                  )}
+                </motion.button>
+
+              </form>
+
+            </motion.div>
+
+          </div>
         </div>
-    )
-}
+      </section>
 
-export default ContactPage
+    </div>
+  );
+}

@@ -1,106 +1,55 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
-import { projectsData } from '../data/projectsData'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { PROJECTS_CATALOG } from '../data/siteData';
 
-const AllProjectsPage = () => {
-    const navigate = useNavigate()
-
-    const handleFullView = (index) => {
-        navigate('/projects', { state: { projectIndex: index } })
-    }
-
-    return (
-        <div className="pt-32 pb-40 min-h-screen bg-white">
-            <div className="max-w-[1700px] mx-auto px-6 lg:px-12 space-y-40">
-                {projectsData.map((project, index) => {
-                    const isEven = index % 2 === 0
-                    return (
-                        <section
-                            key={project.id}
-                            className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center"
-                        >
-                            {/* Visual Side */}
-                            <div className={`space-y-8 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
-                                <div
-                                    className="relative aspect-video bg-gray-50 overflow-hidden cursor-pointer"
-                                    onClick={() => handleFullView(index)}
-                                >
-                                    <img
-                                        src={project.images[0]}
-                                        alt={project.title}
-                                        className="w-full h-full object-contain"
-                                    />
-                                </div>
-
-                                {/* Tech & Action */}
-                                <div className="pt-4 border-t border-black/5 flex flex-wrap items-center justify-between gap-6">
-                                    <div className="space-y-4">
-                                        <h3 className="text-xs font-black uppercase tracking-wider text-black/40">Technology Matrix</h3>
-                                        <div className="flex flex-wrap gap-2">
-                                            {project.tech?.map((t) => (
-                                                <span key={t} className="px-5 py-2 rounded-lg bg-gray-50 border border-black/5 text-xs font-bold text-black uppercase tracking-widest">
-                                                    {t}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <button
-                                        onClick={() => handleFullView(index)}
-                                        className="px-8 py-4 rounded-xl bg-black text-white flex items-center gap-3"
-                                    >
-                                        <span className="text-xs font-black uppercase tracking-widest text-white">Full View</span>
-                                        <ChevronRight size={14} />
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Content Side */}
-                            <div className={`space-y-10 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
-                                {/* Index number */}
-                                <div className="text-[120px] font-black leading-none text-black/5 select-none -mb-8">
-                                    {String(index + 1).padStart(2, '0')}
-                                </div>
-
-                                <div>
-                                    <h1
-                                        className="text-5xl lg:text-6xl font-black tracking-tighter uppercase leading-[0.9] text-black mb-4 cursor-pointer hover:text-blue-600 transition-colors"
-                                        onClick={() => handleFullView(index)}
-                                    >
-                                        {project.title}
-                                    </h1>
-                                    <p className="text-black text-lg font-black tracking-[0.15em] uppercase">
-                                        {project.tagline}
-                                    </p>
-                                </div>
-
-                                <div className="h-[1px] bg-gray-100 w-full" />
-
-                                <div className="space-y-8">
-                                    <p className="text-lg text-black leading-relaxed font-light">
-                                        {project.fullDescription}
-                                    </p>
-
-                                    <div className="grid grid-cols-1 gap-4">
-                                        {project.features?.map((feature, fIdx) => (
-                                            <div key={fIdx} className="flex items-start gap-4">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-black mt-2 shrink-0" />
-                                                <div>
-                                                    <div className="text-xs font-black uppercase text-black mb-1">{feature.title}</div>
-                                                    <div className="text-sm text-black leading-relaxed">{feature.desc}</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    )
-                })}
-            </div>
+export default function AllProjectsPage() {
+  return (
+    <div className="pt-20 bg-slate-50 min-h-screen text-slate-900">
+      
+      {/* HERO */}
+      <section className="bg-navy-gradient text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Link to="/projects" className="inline-flex items-center gap-2 text-xs font-bold text-cyan-300 hover:text-white mb-6">
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Projects Overview</span>
+          </Link>
+          <h1 className="text-4xl font-extrabold">Complete Projects Catalog</h1>
+          <p className="text-slate-300 text-sm mt-2">Comprehensive breakdown of active, completed, and custom engineering deployments.</p>
         </div>
-    )
-}
+      </section>
 
-export default AllProjectsPage
+      {/* CATALOG LIST */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          {PROJECTS_CATALOG.map((proj) => (
+            <div key={proj.id} className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-5 rounded-2xl overflow-hidden bg-slate-900 border border-slate-200">
+                <img src={proj.image} alt={proj.title} className="w-full h-64 object-cover" />
+              </div>
+              <div className="lg:col-span-7 space-y-4">
+                <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold">{proj.category}</span>
+                <h3 className="text-2xl font-bold text-[#002B54]">{proj.title}</h3>
+                <p className="text-sm text-slate-600 leading-relaxed">{proj.description}</p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {proj.tech.map((t, idx) => (
+                    <span key={idx} className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <div className="pt-4 flex gap-4">
+                  <Link to="/portal" className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-white bg-blue-600 rounded-full">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Access Project Sandbox</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+    </div>
+  );
+}
